@@ -169,14 +169,32 @@ public class Polynomial
 		}
 	}
 	
-	public void saveToFile (String path) throws FileNotFoundException// assumes file is empty and writes to 1 line
+	public void saveToFile (String path) throws FileNotFoundException, IOException// assumes file is empty and writes to 1 line
 	{
 		//need to go through expo and coef at the same time, put in coefficient first and then
 		//check the exponent, if exponent = 0 than it is a constant, if exponent > 0 then
 		//need to add x in with exponent right after
 		
 		File outfile = new File (path);
-		PrintStream output = new PrintStream(outfile);
+		PrintStream output = null;
+		if (outfile.exists())
+		{
+			if (outfile.canRead() && outfile.isFile())
+			{
+				output = new PrintStream(outfile);
+			}
+			else
+			{
+				outfile.delete();
+				outfile.createNewFile();
+				output = new PrintStream(outfile);
+			}
+		}
+		else
+		{
+			outfile.createNewFile();
+			output = new PrintStream(outfile);
+		}
 		if (this.coefficientsNZ == null && this.expo == null)
 		{
 			output.print(0);
